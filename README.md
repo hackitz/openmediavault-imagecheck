@@ -6,6 +6,9 @@ images are available for your running containers.
 It **never** pulls, recreates, or changes anything. It only compares digests
 and reports.
 
+Companion app: [OMV Companion on Google Play](https://play.google.com/store/apps/details?id=net.hackitz.omvcompanion)
+(optional — see [below](#omv-companion)).
+
 ## How it works
 
 - `/usr/sbin/omv-imagecheck` (python3) lists running containers, and for each
@@ -110,8 +113,16 @@ configuration — everything it needs lives in the JSON cache.
   `imagetools .Manifest.Digest` refer to the manifest-list (index) digest.
 - Purging the package removes the JSON cache; plain removal keeps it.
 
-## Related
+## OMV Companion
 
-The OMV Companion Android app consumes `getStatus`/`getUpdateList` when this
-plugin is installed, and falls back to driving `Compose.doDockerCmd` itself
-when it isn't.
+This plugin is the server-side counterpart to **OMV Companion**, an Android app
+for monitoring and managing an OpenMediaVault server:
+
+**[OMV Companion on Google Play](https://play.google.com/store/apps/details?id=net.hackitz.omvcompanion)**
+
+The app consumes `getStatus`/`getUpdateList` when this plugin is installed —
+surfacing the update count next to its package-updates count — and falls back
+to driving `Compose.doDockerCmd` itself when it isn't.
+
+The plugin is **not** required to use the app, and the app is not required to
+use the plugin: the workbench page and dashboard widget work on their own.
