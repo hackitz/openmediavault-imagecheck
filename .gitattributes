@@ -1,0 +1,4 @@
+* text=auto eol=lf
+*.sh text eol=lf
+usr/sbin/omv-imagecheck text eol=lf
+etc/cron.d/openmediavault-imagecheck text eol=lf

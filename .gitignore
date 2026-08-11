@@ -1,0 +1,10 @@
+# Runtime cache written by the checker on the OMV host — not source
+imagecheck.json
+/var/
+*.log
+
+# Editor / OS cruft
+.idea/
+.vscode/
+*.swp
+.DS_Store

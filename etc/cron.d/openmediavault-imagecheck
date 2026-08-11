@@ -1,0 +1,9 @@
+# openmediavault-imagecheck
+# Daily monitor-only Docker image update check. Writes /var/lib/openmediavault/imagecheck.json,
+# which the ImageCheck RPC service (and the OMV Companion app) reads.
+# Runs as root because it needs Docker access. Adjust the time to taste.
+# Deliberately staggered off the top of the hour to be polite to registries.
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+17 4 * * *   root   /usr/sbin/omv-imagecheck --refresh >/dev/null 2>&1
