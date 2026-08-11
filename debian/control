@@ -1,0 +1,26 @@
+Source: openmediavault-imagecheck
+Section: net
+XB-Plugin-Section: utilities
+Priority: optional
+Maintainer: OpenMediaVault Plugin Developers <plugins@omv-extras.org>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.7.2
+Homepage: http://omv-extras.org/
+
+Package: openmediavault-imagecheck
+Architecture: all
+Depends: openmediavault (>= 7.0),
+         python3,
+         ${misc:Depends}
+Recommends: docker-ce | docker.io
+Description: Docker image update checker
+ Monitor-only checker that reports whether newer Docker images are available
+ for running containers.
+ .
+ For every running container the local registry digest (what was actually
+ pulled) is compared against the digest the registry currently advertises for
+ that same tag, fetched without pulling the image. It never pulls, recreates
+ or changes anything - it only reports.
+ .
+ The result is cached daily by a cron job and exposed through the ImageCheck
+ RPC service, a workbench page and a dashboard widget.

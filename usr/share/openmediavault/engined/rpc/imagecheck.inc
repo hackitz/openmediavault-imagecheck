@@ -105,8 +105,9 @@ class OMVRpcServiceImageCheck extends \OMV\Rpc\ServiceAbstract
             $images,
             $params['start'],
             $params['limit'],
-            $params['sortfield'],
-            $params['sortdir']
+            // Optional in rpc.common.getlist - the dashboard widget omits them.
+            array_key_exists('sortfield', $params) ? $params['sortfield'] : null,
+            array_key_exists('sortdir', $params) ? $params['sortdir'] : null
         );
     }
 

@@ -1,0 +1,78 @@
+version: "1.0"
+type: component
+data:
+  name: omv-services-imagecheck-datatable-page
+  type: datatablePage
+  config:
+    autoReload: false
+    hasSearchField: true
+    stateId: 5172df95-6841-427e-8bbe-97c98aa01a32
+    sorters:
+      - dir: asc
+        prop: container
+    store:
+      proxy:
+        service: ImageCheck
+        get:
+          method: getUpdateList
+    hints:
+      - type: info
+        text: _("Monitor only - nothing is ever pulled, recreated or changed.<br/>The list is refreshed once a day; click the refresh button to check now.")
+        dismissible: true
+    columns:
+      - name: _("Container")
+        prop: container
+        flexGrow: 1
+        sortable: true
+      - name: _("Repository")
+        prop: repo
+        flexGrow: 2
+        sortable: true
+        cellTemplateName: copyToClipboard
+      - name: _("Tag")
+        prop: tag
+        flexGrow: 1
+        sortable: true
+      - name: _("Update available")
+        prop: updateAvailable
+        flexGrow: 1
+        sortable: true
+        cellTemplateName: checkIcon
+      - name: _("Local digest")
+        prop: local
+        flexGrow: 2
+        hidden: true
+        cellTemplateName: copyToClipboard
+      - name: _("Registry digest")
+        prop: remote
+        flexGrow: 2
+        hidden: true
+        cellTemplateName: copyToClipboard
+      - name: _("Note")
+        prop: error
+        flexGrow: 2
+        sortable: true
+    actions:
+      - type: iconButton
+        icon: mdi:refresh
+        tooltip: _("Check now")
+        enabledConstraints:
+          minSelected: 0
+        execute:
+          type: taskDialog
+          taskDialog:
+            config:
+              title: _("Checking for image updates ...")
+              startOnInit: true
+              request:
+                service: ImageCheck
+                method: refresh
+      - type: menu
+        icon: mdi:link
+        tooltip: _("Docs")
+        actions:
+          - text: _("omv-extras.org wiki")
+            icon: mdi:link-box-variant-outline
+            execute:
+              type: url
+              url: '/externalRedirect/https%3A%2F%2Fwiki.omv-extras.org%2Fdoku.php%3Fid%3Domv7%3Aomv7_plugins%3Aimagecheck'

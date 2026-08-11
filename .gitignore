@@ -3,8 +3,22 @@ imagecheck.json
 /var/
 *.log
 
+# Debian build artefacts
+debian/files
+debian/debhelper-build-stamp
+debian/*.substvars
+debian/*.debhelper
+debian/.debhelper/
+debian/openmediavault-imagecheck/
+debian/tmp/
+../*.deb
+../*.buildinfo
+../*.changes
+
 # Editor / OS cruft
 .idea/
 .vscode/
 *.swp
 .DS_Store
+__pycache__/
+*.pyc

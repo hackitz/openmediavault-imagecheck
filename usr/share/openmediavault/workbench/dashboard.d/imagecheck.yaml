@@ -1,0 +1,33 @@
+version: "1.0"
+type: dashboard-widget
+data:
+  id: 68e2beb8-143a-4e46-bc42-398c5ebddbde
+  type: grid
+  reloadPeriod: 300000
+  permissions:
+    role:
+      - admin
+  title: _("Docker Image Updates")
+  description: _("Shows which running containers have a newer image available.")
+  grid:
+    item:
+      class: 'omv-cursor-pointer omv-text-center omv-text-nowrap {% if updateAvailable %}omv-background-color-pair-warning{% elif error %}omv-background-color-pair-gray{% else %}omv-background-color-pair-success{% endif %}'
+      title: '{{ container }}'
+      titleClass: 'omv-text-truncate'
+      content: '{% if updateAvailable %}{{ tag }} - update{% elif error %}{{ tag }} - n/a{% else %}{{ tag }} - current{% endif %}'
+      contentClass: 'omv-text-truncate'
+      tooltip: '{{ repo }}:{{ tag }}<br>{% if updateAvailable %}A newer image is available{% elif error %}{{ error }}{% else %}Up to date{% endif %}'
+      url: '/services/imagecheck'
+    store:
+      proxy:
+        service: ImageCheck
+        get:
+          method: getUpdateList
+          params:
+            start: 0
+            limit: -1
+      sorters:
+        - prop: updateAvailable
+          dir: desc
+        - prop: container
+          dir: asc

@@ -1,0 +1,7 @@
+version: "1.0"
+type: navigation-item
+data:
+  path: "services.imagecheck"
+  text: _("Image Check")
+  icon: "mdi:docker"
+  url: "/services/imagecheck"
