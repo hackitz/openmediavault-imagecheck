@@ -1,3 +1,13 @@
+openmediavault-imagecheck (8.0.0) stable; urgency=medium
+
+  * Switch registry digest lookups from `docker buildx imagetools` to regctl
+    (regclient).
+  * Require OpenMediaVault 8 or newer (OMV 7 is end-of-life); enforced at
+    install.
+  * Add step-by-step INSTALL.md.
+
+ -- hackitz <hackitxps@gmail.com>  Tue, 18 Aug 2026 18:19:20 -0400
+
 openmediavault-imagecheck (7.0.0) stable; urgency=low
 
   * Initial release.

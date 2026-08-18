@@ -28,9 +28,15 @@ import time
 
 CACHE_FILE = "/var/lib/openmediavault/imagecheck.json"
 
+__version__ = "8.0.0"
+
 # Per-command timeouts (seconds). Registry lookups can be slow.
 DOCKER_TIMEOUT = 30
 REGISTRY_TIMEOUT = 45
+
+# regctl (regclient) — installed by install.sh into /usr/local/bin. Queries
+# registries directly (no pull, no Docker daemon) for the current tag digest.
+REGCTL = os.environ.get("OMV_IMAGECHECK_REGCTL", "regctl")
 
 
 def run(args, timeout):
@@ -54,6 +60,11 @@ def run(args, timeout):
 def docker_available():
     rc, _out, _err = run(["docker", "version", "--format", "{{.Server.Version}}"],
                           DOCKER_TIMEOUT)
+    return rc == 0
+
+
+def regctl_available():
+    rc, _out, _err = run([REGCTL, "version"], DOCKER_TIMEOUT)
     return rc == 0
 
 
@@ -143,14 +154,14 @@ def local_digest(image_ref, repo):
 def remote_digest(image_ref):
     """
     The digest the registry currently advertises for image_ref's tag, fetched
-    WITHOUT pulling the image. buildx imagetools is the stable path (no
-    experimental CLI flag) and returns the index/manifest digest, which is
-    what RepoDigests holds too - so the two are directly comparable.
+    via regctl (regclient) WITHOUT pulling the image and WITHOUT needing the
+    Docker daemon. `regctl image digest` returns the index/manifest digest the
+    tag points to - what RepoDigests holds too - so the two are directly
+    comparable. Private registries use the host's ~/.docker/config.json creds.
     Returns (digest, None) or (None, error_message).
     """
     rc, out, err = run(
-        ["docker", "buildx", "imagetools", "inspect", image_ref,
-         "--format", "{{.Manifest.Digest}}"],
+        [REGCTL, "image", "digest", image_ref],
         REGISTRY_TIMEOUT,
     )
     if rc == 0 and out.startswith("sha256:"):
@@ -188,6 +199,12 @@ def do_check():
     if not docker_available():
         result["error"] = ("Docker is not available to this user. The checker "
                             "must run as root (or a docker-group user).")
+        print(result["error"])
+        return result
+
+    if not regctl_available():
+        result["error"] = ("regctl (regclient) is not installed. Re-run the "
+                            "plugin installer, which downloads it to /usr/local/bin.")
         print(result["error"])
         return result
 
@@ -310,6 +327,8 @@ def read_cache():
 
 def main():
     parser = argparse.ArgumentParser(description="OMV Docker image update checker")
+    parser.add_argument("--version", action="version",
+                        version="omv-imagecheck " + __version__)
     group = parser.add_mutually_exclusive_group()
     group.add_argument("--refresh", action="store_true",
                        help="run the check and update the cache")
